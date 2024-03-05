@@ -8,7 +8,7 @@ import plotly.graph_objects as go
 import requests
 
 #CREATE DATAFRAMES FROM SQL
-mycon=mysql.connector.connect(host="localhost",user="root",password="Thiva@1999",database="phonepe")
+mycon=mysql.connector.connect(host="localhost",user="root",password="Thiva@1999",database="phonepe",auth_plugin='mysql_native_password')
 mycursor=mycon.cursor()
 
 #1
@@ -218,18 +218,18 @@ def Aggre_user_plot_3(df,state):
 
 def map_insure_plot_1(df,state):
     miys= df[df["States"] == state]
-    miysg= miys.groupby("Districts")[["Transaction_count","Transaction_amount"]].sum()
+    miysg= miys.groupby("District")[["Transaction_count","Transaction_amount"]].sum()
     miysg.reset_index(inplace= True)
 
     col1,col2= st.columns(2)
     with col1:
-        fig_map_bar_1= px.bar(miysg, x= "Districts", y= "Transaction_amount",
+        fig_map_bar_1= px.bar(miysg, x= "District", y= "Transaction_amount",
                               width=600, height=500, title= f"{state.upper()} DISTRICTS TRANSACTION AMOUNT",
                               color_discrete_sequence= px.colors.sequential.Mint_r)
         st.plotly_chart(fig_map_bar_1)
 
     with col2:
-        fig_map_bar_1= px.bar(miysg, x= "Districts", y= "Transaction_count",
+        fig_map_bar_1= px.bar(miysg, x= "District", y= "Transaction_count",
                               width=600, height= 500, title= f"{state.upper()} DISTRICTS TRANSACTION COUNT",
                               color_discrete_sequence= px.colors.sequential.Mint)
         
@@ -237,18 +237,18 @@ def map_insure_plot_1(df,state):
 
 def map_insure_plot_2(df,state):
     miys= df[df["States"] == state]
-    miysg= miys.groupby("Districts")[["Transaction_count","Transaction_amount"]].sum()
+    miysg= miys.groupby("District")[["Transaction_count","Transaction_amount"]].sum()
     miysg.reset_index(inplace= True)
 
     col1,col2= st.columns(2)
     with col1:
-        fig_map_pie_1= px.pie(miysg, names= "Districts", values= "Transaction_amount",
+        fig_map_pie_1= px.pie(miysg, names= "District", values= "Transaction_amount",
                               width=600, height=500, title= f"{state.upper()} DISTRICTS TRANSACTION AMOUNT",
                               hole=0.5,color_discrete_sequence= px.colors.sequential.Mint_r)
         st.plotly_chart(fig_map_pie_1)
 
     with col2:
-        fig_map_pie_1= px.pie(miysg, names= "Districts", values= "Transaction_count",
+        fig_map_pie_1= px.pie(miysg, names= "District", values= "Transaction_count",
                               width=600, height= 500, title= f"{state.upper()} DISTRICTS TRANSACTION COUNT",
                               hole=0.5,  color_discrete_sequence= px.colors.sequential.Oranges_r)
         
@@ -324,16 +324,16 @@ def top_user_plot_2(df,state):
     st.plotly_chart(fig_top_plot_1)
 
 def ques1():
-    brand= Aggre_user[["Brands","Transaction_count"]]
-    brand1= brand.groupby("Brands")["Transaction_count"].sum().sort_values(ascending=False)
+    brand= Agg_Users[["Brand_Name","Transaction_Count"]]
+    brand1= brand.groupby("Brand_Name")["Transaction_Count"].sum().sort_values(ascending=False)
     brand2= pd.DataFrame(brand1).reset_index()
 
-    fig_brands= px.pie(brand2, values= "Transaction_count", names= "Brands", color_discrete_sequence=px.colors.sequential.dense_r,
+    fig_brands= px.pie(brand2, values= "Transaction_Count", names= "Brand_Name", color_discrete_sequence=px.colors.sequential.dense_r,
                        title= "Top Mobile Brands of Transaction_count")
     return st.plotly_chart(fig_brands)
 
 def ques2():
-    ht= Aggre_transaction[["States", "Transaction_amount"]]
+    ht= Agg_Transaction[["States", "Transaction_amount"]]
     ht1= ht.groupby("States")["Transaction_amount"].sum().sort_values(ascending= False)
     ht2= pd.DataFrame(ht1).reset_index().head(5)
 
@@ -342,7 +342,7 @@ def ques2():
     return st.plotly_chart(fig_lts)
 
 def ques3():
-    lt= Aggre_transaction[["States", "Transaction_amount"]]
+    lt= Agg_Transaction[["States", "Transaction_amount"]]
     lt1= lt.groupby("States")["Transaction_amount"].sum().sort_values(ascending= True)
     lt2= pd.DataFrame(lt1).reset_index().head(5)
 
@@ -351,7 +351,7 @@ def ques3():
     return st.plotly_chart(fig_lts)
 
 def ques4():
-    stc= Aggre_transaction[["States", "Transaction_count"]]
+    stc= Agg_Transaction[["States", "Transaction_count"]]
     stc1= stc.groupby("States")["Transaction_count"].sum().sort_values(ascending=False)
     stc2= pd.DataFrame(stc1).reset_index()
 
@@ -360,7 +360,7 @@ def ques4():
     return st.plotly_chart(fig_stc)
 
 def ques5():
-    stc= Aggre_transaction[["States", "Transaction_count"]]
+    stc= Agg_Transaction[["States", "Transaction_count"]]
     stc1= stc.groupby("States")["Transaction_count"].sum().sort_values(ascending=True)
     stc2= pd.DataFrame(stc1).reset_index()
 
@@ -369,57 +369,57 @@ def ques5():
     return st.plotly_chart(fig_stc)
 
 def ques6():
-    dt= Map_transaction[["Districts", "Transaction_amount"]]
-    dt1= dt.groupby("Districts")["Transaction_amount"].sum().sort_values(ascending=False)
+    dt= Map_Transaction[["District", "Transaction_amount"]]
+    dt1= dt.groupby("District")["Transaction_amount"].sum().sort_values(ascending=False)
     dt2= pd.DataFrame(dt1).reset_index().head(50)
 
-    fig_dt= px.bar(dt2, x= "Districts", y= "Transaction_amount", title= "DISTRICTS WITH LOWEST TRANSACTION AMOUNT",
+    fig_dt= px.bar(dt2, x= "District", y= "Transaction_amount", title= "DISTRICTS WITH LOWEST TRANSACTION AMOUNT",
                 color_discrete_sequence= px.colors.sequential.Mint_r)
     return st.plotly_chart(fig_dt)
 
 def ques7():
-    dt= Map_transaction[["Districts", "Transaction_amount"]]
-    dt1= dt.groupby("Districts")["Transaction_amount"].sum().sort_values(ascending=True)
+    dt= Map_Transaction[["District", "Transaction_amount"]]
+    dt1= dt.groupby("District")["Transaction_amount"].sum().sort_values(ascending=True)
     dt2= pd.DataFrame(dt1).reset_index().head(50)
 
-    fig_dt= px.bar(dt2, x= "Districts", y= "Transaction_amount", title= "DISTRICTS WITH LOWEST TRANSACTION AMOUNT",
+    fig_dt= px.bar(dt2, x= "District", y= "Transaction_amount", title= "DISTRICTS WITH LOWEST TRANSACTION AMOUNT",
                 color_discrete_sequence= px.colors.sequential.Mint_r)
     return st.plotly_chart(fig_dt)
 
 def ques8():
-    dtc= Aggre_transaction[["District", "Transaction_count"]]
-    dtc1= dtc.groupby("States")["Transaction_count"].sum().sort_values(ascending=False)
+    dtc= Agg_Transaction[["District", "Transaction_Count"]]
+    dtc1= dtc.groupby("States")["Transaction_Count"].sum().sort_values(ascending=False)
     dtc2= pd.DataFrame(dtc1).reset_index()
 
-    fig_dtc= px.bar(dtc2, x= "States", y= "Transaction_count", title= "DISTRICTS WITH HIGHEST TRANSACTION COUNT",
+    fig_dtc= px.bar(dtc2, x= "States", y= "Transaction_Count", title= "DISTRICTS WITH HIGHEST TRANSACTION COUNT",
                     color_discrete_sequence= px.colors.sequential.Magenta_r)
     return st.plotly_chart(fig_dtc)
 
 def ques9():
-    dtcl= Aggre_transaction[["District", "Transaction_count"]]
-    dtcl1= stc.groupby("States")["Transaction_count"].sum().sort_values(ascending=True)
+    dtcl= Agg_Transaction[["District", "Transaction_Count"]]
+    dtcl1= dtcl.groupby("States")["Transaction_Count"].sum().sort_values(ascending=True)
     dtcl2= pd.DataFrame(dtcl1).reset_index()
 
-    fig_dtcl= px.bar(dtcl2, x= "States", y= "Transaction_count", title= "DISTRICTS WITH LOWEST TRANSACTION COUNT",
+    fig_dtcl= px.bar(dtcl2, x= "States", y= "Transaction_Count", title= "DISTRICTS WITH LOWEST TRANSACTION COUNT",
                     color_discrete_sequence= px.colors.sequential.Magenta_r)
     return st.plotly_chart(fig_dtcl)
 
 
 def ques10():
-    sa= Map_user[["States", "AppOpens"]]
-    sa1= sa.groupby("States")["AppOpens"].sum().sort_values(ascending=False)
+    sa= Map_Users[["States", "App_Opens"]]
+    sa1= sa.groupby("States")["App_Opens"].sum().sort_values(ascending=False)
     sa2= pd.DataFrame(sa1).reset_index().head(10)
 
-    fig_sa= px.bar(sa2, x= "States", y= "AppOpens", title="Top 10 States With AppOpens",
+    fig_sa= px.bar(sa2, x= "States", y= "App_Opens", title="Top 10 States With AppOpens",
                 color_discrete_sequence= px.colors.sequential.deep_r)
     return st.plotly_chart(fig_sa)
 
 def ques11():
-    sa= Map_user[["States", "AppOpens"]]
-    sa1= sa.groupby("States")["AppOpens"].sum().sort_values(ascending=True)
+    sa= Map_Users[["States", "App_Opens"]]
+    sa1= sa.groupby("States")["App_Opens"].sum().sort_values(ascending=True)
     sa2= pd.DataFrame(sa1).reset_index().head(10)
 
-    fig_sa= px.bar(sa2, x= "States", y= "AppOpens", title="lowest 10 States With AppOpens",
+    fig_sa= px.bar(sa2, x= "States", y= "App_Opens", title="lowest 10 States With AppOpens",
                 color_discrete_sequence= px.colors.sequential.dense_r)
     return st.plotly_chart(fig_sa)
 
@@ -458,27 +458,27 @@ if select == "Data Exploration":
         if method == "Insurance Analysis":
             col1,col2= st.columns(2)
             with col1:
-                years= st.slider("Select the Year", Agg_Insurance["Years"].unique())
+                years= st.selectbox("Select the Year", Agg_Insurance["Years"].unique())
 
             df_agg_insur_Y= Agg_insurance_year(Agg_Insurance,years)
             
             col1,col2= st.columns(2)
             with col1:
-                st.selectbox("Select the Quarter", df_agg_insur_Y["Quarter"].unique())
+                quarters= st.selectbox("Select the Quarter", df_agg_insur_Y["Quarter"].unique())
                 
-            Aggre_insurance_Y_Q(df_agg_insur_Y, quarters)
+            Aggre_insurance_quarter(df_agg_insur_Y, quarters)
 
             
         elif method == "Transaction Analysis":
             col1,col2= st.columns(2)
             with col1:
-                years_at= st.slider("**Select the Year**", Agg_Transaction["Years"].unique())
+                years_at= st.selectbox("**Select the Year**", Agg_Transaction["Years"].unique())
 
-            df_agg_tran_Y= Aggre_insurance_year(Agg_Transaction,years_at)
+            df_agg_tran_Y= Agg_insurance_year(Agg_Transaction,years_at)
             
             col1,col2= st.columns(2)
             with col1:
-                quarters_at= st.slider("Select the Quarter", df_agg_tran_Y["Quarter"].unique())
+                quarters_at= st.selectbox("Select the Quarter", df_agg_tran_Y["Quarter"].unique())
 
             df_agg_tran_Y_Q= Aggre_insurance_quarter(df_agg_tran_Y, quarters_at)
             
@@ -489,8 +489,8 @@ if select == "Data Exploration":
 
 
         elif method == "User Analysis":
-            year_au= st.selectbox("Select the Year_AU",Aggre_user["Years"].unique())
-            agg_user_Y= Aggre_user_plot_1(Aggre_user,year_au)
+            year_au= st.selectbox("Select the Year_AU",Agg_Users["Years"].unique())
+            agg_user_Y= Aggre_user_plot_1(Agg_Users,year_au)
 
             quarter_au= st.selectbox("Select the Quarter_AU",agg_user_Y["Quarter"].unique())
             agg_user_Y_Q= Aggre_user_plot_2(agg_user_Y,quarter_au)
@@ -504,9 +504,9 @@ if select == "Data Exploration":
         if method_map == "Map Insurance Analysis":
             col1,col2= st.columns(2)
             with col1:
-                years_m1= st.slider("Select the Year_mi", Map_Insur["Years"].unique())
+                years_m1= st.selectbox("Select the Year_mi", Map_Insurance["Years"].unique())
 
-            df_map_insur_Y= Aggre_insurance_year(Map_Insur,years_m1)
+            df_map_insur_Y= Agg_insurance_year(Map_Insurance,years_m1)
 
             col1,col2= st.columns(2)
             with col1:
@@ -516,9 +516,9 @@ if select == "Data Exploration":
             
             col1,col2= st.columns(2)
             with col1:
-                quarters_m1= st.slider("**Select the Quarter_mi**", df_map_insur_Y["Quarter"].min(), df_map_insur_Y["Quarter"].max(),df_map_insur_Y["Quarter"].min())
+                quarters_m1= st.selectbox("**Select the Quarter_mi**", df_map_insur_Y["Quarter"].unique())
 
-            df_map_insur_Y_Q= Aggre_insurance_Y_Q(df_map_insur_Y, quarters_m1)
+            df_map_insur_Y_Q= Aggre_insurance_quarter(df_map_insur_Y, quarters_m1)
 
             col1,col2= st.columns(2)
             with col1:
@@ -529,9 +529,9 @@ if select == "Data Exploration":
         elif method_map == "Map Transaction Analysis":
             col1,col2= st.columns(2)
             with col1:
-                years_m2= st.selectbox("**Select the Year_mi**", Map_Trans["Years"].unique())
+                years_m2= st.selectbox("**Select the Year_mi**", Map_Transaction["Years"].unique())
 
-            df_map_tran_Y= Aggre_insurance_Y(Map_Trans, years_m2)
+            df_map_tran_Y= Agg_insurance_year(Map_Transaction, years_m2)
 
             col1,col2= st.columns(2)
             with col1:
@@ -543,7 +543,7 @@ if select == "Data Exploration":
             with col1:
                 quarters_m2= st.selectbox("**Select the Quarter_mi**", df_map_tran_Y["Quarter"].unique())
 
-            df_map_tran_Y_Q= Aggre_insurance_Y_Q(df_map_tran_Y, quarters_m2)
+            df_map_tran_Y_Q= Aggre_insurance_quarter(df_map_tran_Y, quarters_m2)
 
             col1,col2= st.columns(2)
             with col1:
@@ -554,8 +554,8 @@ if select == "Data Exploration":
         elif method_map == "Map User Analysis":
             col1,col2= st.columns(2)
             with col1:
-                year_mu1= st.selectbox("Select the Year_mu",Map_User["Years"].unique())
-            map_user_Y= map_user_plot_1(Map_User, year_mu1)
+                year_mu1= st.selectbox("Select the Year_mu",Map_Users["Years"].unique())
+            map_user_Y= map_user_plot_1(Map_Users, year_mu1)
 
             col1,col2= st.columns(2)
             with col1:
@@ -573,38 +573,38 @@ if select == "Data Exploration":
         if method_top == "Top Insurance Analysis":
             col1,col2= st.columns(2)
             with col1:
-                years_t1= st.selectbox("Select the Year_ti", Top_Insur["Years"].unique())
+                years_t1= st.selectbox("Select the Year_ti", Top_Insurance["Years"].unique())
  
-            df_top_insur_Y= Aggre_insurance_Y(Top_insurance,years_t1)
+            df_top_insur_Y= Agg_insurance_year(Top_Insurance,years_t1)
 
             
             col1,col2= st.columns(2)
             with col1:
                 quarters_t1= st.selectbox("Select the Quarter_ti", df_top_insur_Y["Quarter"].unique())
 
-            df_top_insur_Y_Q= Aggre_insurance_Y_Q(df_top_insur_Y, quarters_t1)
+            df_top_insur_Y_Q= Aggre_insurance_quarter(df_top_insur_Y, quarters_t1)
 
         
         elif method_top == "Top Transaction Analysis":
             col1,col2= st.columns(2)
             with col1:
-                years_t2= st.selectbox("Select the Year_tt", Top_Trans["Years"].unique())
+                years_t2= st.selectbox("Select the Year_tt", Top_Transaction["Years"].unique())
  
-            df_top_tran_Y= Aggre_insurance_Y(Top_Trans,years_t2)
+            df_top_tran_Y= Agg_insurance_year(Top_Transaction,years_t2)
 
             
             col1,col2= st.columns(2)
             with col1:
                 quarters_t2= st.selectbox("Select the Quarter_tt", df_top_tran_Y["Quarter"].unique())
 
-            df_top_tran_Y_Q= Aggre_insurance_Y_Q(df_top_tran_Y, quarters_t2)
+            df_top_tran_Y_Q= Aggre_insurance_quarter(df_top_tran_Y, quarters_t2)
 
         elif method_top == "Top User Analysis":
             col1,col2= st.columns(2)
             with col1:
-                years_t3= st.selectbox("Select the Year_tu", Top_User["Years"].unique())
+                years_t3= st.selectbox("Select the Year_tu", Top_Users["Years"].unique())
 
-            df_top_user_Y= top_user_plot_1(Top_user,years_t3)
+            df_top_user_Y= top_user_plot_1(Top_Users,years_t3)
 
             col1,col2= st.columns(2)
             with col1:
@@ -653,19 +653,3 @@ if select == "Top Charts":
 
     elif ques=="Least 10 States With AppOpens":
         ques11()
-
-    
-
-    
-
-
-    
-
-   
-
-
-            
-
-
-
-
