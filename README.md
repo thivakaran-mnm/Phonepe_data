@@ -14,7 +14,6 @@ The PhonePe Data Visualization and Exploration app is built using the Streamlit 
 
 ##Installation
 To run this application locally, follow these steps:
-
 1. Clone this repository to your local machine.
 2. Install the required Python packages.
 3. Ensure that you have a MySQL server running locally with the appropriate database and credentials configured.
